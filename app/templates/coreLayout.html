@@ -1,0 +1,56 @@
+
+<!DOCTYPE html>
+<html>
+       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+       <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
+       <style type="text/css">
+         .container {
+           max-width: 1720px;
+           padding-top: 10px;
+         }
+         h2 {color: red;}
+       </style>
+   <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/style.css') }}">
+   <head> 
+      {% if title %}
+         <title> SWeeTapp - {{ title }} </title>
+      {% else %}
+         <title> SWeeTapp </title>
+      {% endif %}     
+   </head>
+
+   <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+   <script src="{{ config.PERSONA_JS }}"></script>
+   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+   <script>
+     /* the url root is useful for doing HTTP requests */
+     var $URL_ROOT = {{ request.url_root|tojson }};
+     /* we store the current user here so that the persona
+        javascript support knows about the current user */
+     var $CURRENT_USER = {{ g.user|tojson }};
+   </script>
+   <script src="{{ url_for('static', filename='js/persona.js') }}"></script>
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">  
+
+   <header>
+      <h1>SweetSai </h1>
+      <div class="authbar">
+        {% if g.user %}
+          Signed in as <em>{{ g.user }}</em>
+          (<a href="#" class="signout">Sign out</a>)
+        {% else %}
+          Not signed in. <a href="#" class="signin">Sign in</a>
+        {% endif %}
+        (<a href="/index" class="newURL">new URL</a>)
+      </div>
+   </header>
+
+   <body>
+     <div class="container">
+     {% block body %}{% endblock %}
+     </div>
+     <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+     <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+   </body>
+
+</html>

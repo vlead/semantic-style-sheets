@@ -1,0 +1,534 @@
+#+Author: Sai Gollapudi
+#+EMAIL:  saigollapudi1@gmail.com
+
+#+DESCRIPTION: starting a base code for a renarrator
+#+KEYWORDS: Alipi, Renarration, Sweets, Semantic Style Sheets, CSS, Style Sheets, Markup
+#+LANGUAGE:  en
+#+OPTIONS:   H:3 num:t toc:t \n:nil @:t ::t |:t ^:t -:t f:t *:t <:t
+#+OPTIONS:   TeX:t LaTeX:nil skip:nil d:nil todo:t pri:nil tags:not-in-toc
+#+EXPORT_SELECT_TAGS: export
+#+EXPORT_EXCLUDE_TAGS: noexport
+#+STARTUP: hidestars
+
+#+HTML_LINK_UP: index.html
+#+HTML_LINK_HOME:   index.html
+
+#+INFOJS_OPT: view:info toc:t ltoc:t tdepth:1 mouse:underline buttons:0 path:style/js/org-info.js
+#+HTML_HEAD:  <link rel="stylesheet" type="text/css" href="style/css/worg-style.css" />
+#+HTML_HEAD_EXTRA:  <link rel="stylesheet" type="text/css" href="style/css/override.css" />
+#+HTML_HEAD_EXTRA:  <link rel="icon" type="image/png" href="style/img/favicon/popl.png" />
+
+* Introduction
+The aim of this project is to develop a system for enabling *Semantic
+Style Sheets (SSS)* for existing, published web content. For this we
+draw our inspiration from the concept of W3C's technique of CSS. The
+principle, according to CSS is that web content ought to be separated
+from the appearance demands of the page. For example, while the
+content is maintained in a HTML file, the presentation of the text --
+i.e. the type of font used, the size of paragraph text, the color to
+render -- are all manageable through the CSS document. There can be
+multiple CSS files, each providing its own alternative
+views. Depending on the choice of CSS file, the same HTML file gets
+rendered in different ways. 
+
+Similarly, in our notion of SSS, we wish to take an existing
+published content and provide a mechanism for it to be rendered in
+multiple ways, each providing more meaning to its own group of
+end-users.
+
+The idea behind SSS is to take existing, already published web content and
+enable it to be presented, or re-narrated, in a variety of ways which
+are more easier for the end-user to comprehend -- thus enabling better
+semantics for the end-user. There are multiple examples of how this
+notion of SSS and re-narration can be applied: In the domain of Web
+Accessibility space, a visually challenged person can be assisted by
+taking existing text or visual content on the web, and semantically
+re-narrating it either in Braille or in audio format. This new
+re-presentation is expected to be easier for the visually challenged
+person to comprehend. Similarly, in Educational Technology space, we
+wish to explore novel ways to re-narrate and re-present the existing
+educational material. For example, topics in a course syllabus can be
+used as a data structure for subject navigation; annotation can be
+used to summarize or localize an existing explanation; cross-linking
+can be used to help re-connect seemingly unrelated topics; insertion
+of new text -- perhaps in local vernacular -- can be used to reach
+non-English oriented students etc. In these said ways, SSS can help in
+re-purposing and re-delivering some distributed but relevant content
+to a new user community, who thus far may not have leveraged it. Here,
+the notion of context of usage, may impact the nature of delivery.
+
+Similarly, this SSS can also be applied to enable
+personalization. Here, existing content can be re-narrated with
+modified date-formats, currency-manipulations, unit-measure
+modification to help users see data in a way and format that the
+end-users are more accustomed to. For example, something written in
+lakhs can be re-narrated and re-presented in millions; values in Euros
+can be written in local currency; or data in Miles or Pounds can now
+be re-narrated in kilometers, in kilograms respectively.
+
+Like W3C's Cascading Style Sheets (CSS), our notion of SSS too is a
+presentation layer principle. Our aim is to develop a semantic web
+framework that would enable this type of presentation layer
+manipulation and transformation of existing content. 
+
+** theory behind implementation
+*** What is semantics?
+Semantics has multiple meanings. Our usage of this word is limited to
+synonyms like "meaning" or "sensibility" or "comprehensibility" of web
+content. So, when we say SSS, we are referring to the meaning or the
+sense-making or comprehension of the web content with reference to an
+end-user. Therefore, to take some published content and present it through
+our SSS would mean that we are looking for a system that would make
+the same content more meaningful, sensible, comprehnsible to some
+group of end-users. This, we believe, can be achieved by modifying,
+transforming, HOW the content is presented to users.
+
+SSS, therefore, is about HOW we can modify existing content in
+meaningful ways.
+
+*** comparison with CSS
+CSS commands are stored in a .css file and are based on triples
+consisting of *selector, attribute* and
+*value*. Selectors are the HTML element tags. Attributes are
+the range of values that are applicable to that specific
+selector. Values are the assignment to that attribute. In this way, a
+delivered view of a web content is essentially a transformation 
+
+\begin{equation}
+t=\mathit{f}(c, s)
+\end{equation} where \emph{f} is the transformation function, \emph{c}
+is the HTML content which is to be transformed, \emph{s} is the style
+information that is necessary for applying the transformation, and
+\emph{t} is the transformed target page. 
+
+Exploring this example further we find that there are some implicit
+assumptions already in place in this relationship between content and
+style. Some of the assumptions include:
+ + content is already marked up with tag labels, 
+ + the tags are fixed, agreed-upon and have specific meaning, 
+ + tags reflecting structure semantics of the original source is
+   adequate for manipulation of the content in the presentation layer,
+ + the attributes to be associated with the tags are well defined and fixed,
+ + there could be multiple (style) views of one content that are possible, etc.
+An outcome of these assumptions is that a document structure is known
+(in terms of structure semantics) and it is then representable in some
+data-structure (e.g. DOM tree) which is then useful in page
+manipulation.
+
+
+*** shortcomings of just using CSS
+Per our problem space requirements, we now seek a mechanism to
+manipulate the presentation layer of some content.[fn:: In our
+document, we call the mechanism as SSS, and the process and outcome as
+Renarration.] For instance, we should be able to change text to
+Braille, or audio. Or, use a translation instead of some English
+text. Or, at times, we should be able to replace a complex explanation
+with a summary containing more examples and local vernacular. For
+better understanding of some pages, maybe more post-it like
+annotations are needed, perhaps addition of instructions and debriefs,
+in-line with existing material, would help a remote rural college
+student understand the existing explanation better. 
+
+
+For such presentation level differences, a CSS -- which can change
+layout, color, font, aesthetics -- will not suffice. Even the notion
+of a page being decomposed into just heading, paragraph, div is not
+sufficient. The new requirements on the presentation layer would be
+ + we should have a way to decompose the web document into components
+   which are not just structural -- they ought to be user-definable
+   content-semantic components  
+ + we should have a way to mark-up the original source with the labels
+   and tags that correlate to the new user defined content-semantics
+   structure 
+ + we should have a mechanism to maintain multiple such user-defined
+   content-semantic structures. Each, perhaps, relating to a different
+   community of users 
+ + for each user defined view of a document, we should be (dis)allowed
+   to do only a set of operations which constitute a renarration 
+ + we need a mechanism to mark-up and view a impacted web content
+
+** from CSS to SSS
+Making these assumptions explicit for our SSS concept we find that our
+transformation function needs to be 
+\begin{equation}
+t=\mathit{f}(c, d, v, r)
+\end{equation} where *f* is the transformation function, *c*
+is the original marked up source content which is to be transformed,
+*d* is the semantic structure which is to be used as a lens to
+view the source content, *v* is the viewer-community information,
+*r* is the renarration rules (or operations) that are to be
+applied, and *t* is the target transformed page.   
+
+Here are the parallels we draw between the CSS technique and our SSS
+methodology:
+ + CSS assumes the content is already marked up with tags. HTML tags
+   do this by labeling the various portions of content as $<$p$>$,
+   $<$h1$>$, $<$img$>$ etc. In the case of our SSS, we need to have a
+   schema and a mechanism to make our content well-formed. We are
+   proposing to use annotation and crowd-sourcing to address this
+   aspect. We are going to leverage our work in
+   \cite{Gollapudi_T4E_2013}.
+ + CSS assumes that the tag choices of HTML are well-defined and
+   pre-agreed. In SSS, semantics are being linked to end-user. So, the
+   decomposition of the content is not structural but more
+   user-defined content-semantics. For this reason, we introduce a new
+   data-structure called *d* into our transformation function. We
+   will use an ontology to decompose our document. It will be
+   configured by a role we create called -- a "renarrator"-- who is a
+   user who is willing to re-purpose some existing content for a new
+   group of users.  
+ + CSS takes a publishing paradigm in styling and visualizing web
+   content. In SSS we introduce another new element, viewer *v*,
+   into the transformation process. This element will be a
+   data-structure (e.g. an ontology) representing the choice of
+   user-profiles present in a community for a given renarrator. We are
+   expecting *v* to be a crowd-sourced, user defined element. 
+ + CSS uses attributes to control the visual display. In SSS we
+   introduce the notion of a renarrator and renarration. A renarrator
+   is an individual (or a web-service) who modifies some source
+   content. The modification is geared towards a user community and is
+   inline with some assumption about the structure of the content. The
+   user community is identified by *v* and assumption about
+   content structure is given by *d* ontology. As an example, a
+   volunteer user -- e.g. a professor -- can renarrate a set of
+   documents given by *c* for a community of users  *v* which
+   can have specific instances of a university-affiliate-college
+   ontology, using renarration rules given by *r* which may state
+   such things as add, replace, update nodes of the original *d*
+   tree. 
+ + CSS assumes a document structure which is represented as a DOM. In
+   SSS we do not assume a structure for the document. We use *d*
+   to make the structure user definable. This enables us to work with
+   a \textit{ds\-tree} and not a DOM-tree.  
+
+
+* Operationalizing the idea
+For SSS, as we would need to have annotated content, we will build a
+Renarration Studio -- which is essentially a web portal application -- to
+input a web resource and mark it up with *d* related ontology
+tags. This is analogous to representing current web content using
+element tags in HTML. As already mentioned *d* could be setup as
+a ontology defined by a .owl file. 
+
+Browsers are programmed to display HTML+CSS combinations in the
+presentation layer. As our SSS is not standardized, we plan to develop
+a web portal which will do the presentation layer manipulations of
+*r* on our source content for communities given by *v*. We will call
+this the SSS Browser.
+
+\begin{figure}[!t]
+	\centering
+	\includegraphics[width=0.9\linewidth]{./Figures/markup_arch}
+	\caption{CSS \& SSS Concept comparison}
+	\label{fig_conceptCmpr}
+\end{figure}
+ 
+
+* System Overview
+Our SSS system consists of the following components:
+ + a SSS Renarrator
+ + a SSS Browser
+ + a SSS Configurator
+ + a SSS Storage
+
+Each of these components can be built independently, but, of course,
+they must all integrate to form one SSS system.
+
+** SSS Renarrator
+SSS Renarrator enables Renarration of existing web content.
+
+For us the term Renarration is the act of modifying or
+transforming existing web content. Renarration is done by
+a *Renarrator*. A Renarrator is a 3rd party volunteer user. She would
+be different from the original author of the web content (with whom
+we have no interaction or access), and the final viewer of our
+Renarrated content (whom we will be calling the end-user). 
+
+The broad mechanism behind Renarrator is this: Given a source page (*c*), the
+Renarrator should be able to annotate the existing content using the
+tags defined by a semantic data structure called *d*. This *d* is
+obtained through interaction with the configurator (which allows for
+the definition of *d*) and the Storage (which hosts the *d* for all to use).
+
+We visualize this to be a web portal with a simple editor type
+interface. Overall, these specific actions should be possible:
+ + a user should be registered. They are then identified as a Renarrator.
+ + a user should be able to input a URL to identify a source page to
+   be uploaded. This is the *c*.
+ + the portal should be able to upload and show the input page
+   (or *c*).
+ + this displayed page should be modifyable in our portal. 
+ + the modifications should be storable in persistent storage (like
+   our SSS Storage)
+ 
+*** mechanism for content modification
+A Renarrator (user), should be able to navigate through the
+displayed *c* page using normal mouse, scroll-bar movements. To
+markup or annotate a particular text, the user should be able to
+highlight the content using the mouse click-highlight-and-release
+move. When this is done and is followed by a right mouse button
+click, a contextual menu should pop-up. The menu should showcase
+choices given in *d*. The user should be allowed to choose any of the
+optionss in *d*, add some comments and move on. This action should be
+repeatable throughout the shown *c* text.
+
+At the end, the user should be allowed to publish the annotations
+input throughout the document. So, a local storage in SSS Renarrator
+should be temporarily storing all the markups / annotations that the
+Renarrator has done. When publish button is pressed, these
+temporarily stored annotations should be move to SSS Storage (or
+persistent store).
+
+*** mechaims for persistent storage 
+We aim to use *Sweets* as a backend storage mechanism. Sweets are
+essentially Semantic Tweets like data structures. In relation to our
+SSS work, a Sweet is the annotation component that a renarrator has
+input in the SSS Renarrator portal page. Each annotation is stored as
+a Sweet against that *c* source document. To rebuild the document
+along with the annotations, one needs to retreive the *c* source and
+also all the Sweets that are stored along against that *c*. The final
+target to be displayed will then be modifed for *v* along the
+definitions given by *r*.
+
+**** Sweets related material on GitHub
+Sweets are stored in a Sweetstore. Here is an example of a [Sweet
+repository http://teststore.swtr.us/]. Sweet store is developed at
+Janastu / Servelots. Their Github repository for sweet store is [here
+https://github.com/janastu/swtstore]. Sweets are described [here
+]. Janastu has also developed sample Sweet based web applications
+like Alipi and Restory, which are given [here
+https://github.com/janastu/alipi] and [here
+https://github.com/janastu/restory-template]. Sweeter related
+material is also [here https://github.com/janastu/swtr].
+
+
+** SSS Browser
+The browser is for viewing our SSS marked pages. It should be linked
+to the *d* presented in the SSS Configurator and stored in SSS
+Storage. 
+
+The role of the browser is to register a new user (this will get
+the *v* info from the presented profile information), and based on
+that *v* show the modified *c* the user seeks. The user informs the
+browser what he / she wishes to see by typing in the URL in a text
+area. This is how our *c* link is obtained. In the Sweetstore we will
+have the modifications related to the *c*. SSS Renarator would have
+enabled that. The modified *c* output from SSS Renarrator is the
+markedup content, annotated according to *d*.
+
+Once *c* (given by user) is known, and since *v* info is obtained
+through registration, we can then deduce *r* through predefined
+rules. These rules can be done by SSS Configurator.
+
+** SSS Configurator
+The role of the configurator is to enable the defining and uploading
+of data structures related to *d*, *v* and *r*. 
+
+Initially these structures are simple data-structures. Over time
+these may evolve into complex data structures like Ontologies.
+
+For implmentation of Ontologies we recommend usage of Protege from
+Stanford. The output .owl files can be used as input. For navigating
+in the Ontology, we can rely on SPARQL query language. 
+
+** SSS Storage
+There are multiple types of storage used in our SSS system. One type
+of storage is that we need within a component. For example, we need a
+temporary portal level storage for holding all the Annotations that a
+user has before we submit them for online storing. This type of
+storage is temporary in that it does not persist beyond a
+user-session combination. This memory is lost either if user changes
+or session for a user changes. 
+
+The other type of memory we have is more persistent. This memory is
+what we use to exchange information across the various components of
+the SSS system. For example, a Renarrator makes Annotation or
+marks-up a web resource *c*, then this markup or Annotation must be
+stored someplace for our SSS Browser to display. This is a more
+persistent store. We use the notion of Sweets for this purpose.
+
+**** Usage of Sweets
+Sweets are described elsewhere in this document.
+
+* What is to be implemented
+We need to implement the following
+ + SSS Renarrator
+ + SSS Browser
+ + SSS Configurator
+ + SSS Storage
+
+Each of these systems can be implemented individually but they all
+need to link at a system level. Storage system (using Sweets) will be
+used to communicate between the various components.
+
+We propose to follow a Software release based roadmap approach to the
+development. Here is a brief list of features we expect to be
+implemented incrementally for each release of the various components
+
+** Releases for SSS Renarrator
+The development will be done in several
+releases r0, r1, r2...
+*** r0
+In r0 we aim to just setup the core infrastructure for a web portal
+app which will be able to upload and show code online. We are calling
+this portal application SSS Renarrator or "Renarration studio".
+
+In this initial round we aim to develop:
++ develop a web portal app
++ allow for a user to register (some basic information can be
+  requested for registration. Over time this will evolve)
++ allow user to entr a URL which he / she wishes to renarrate
++ fetch and display the contents of the user entered URL
+
+*** r1
+  + allow user to modify the fetched pages
+  + modifications are done as described in the design of the SSS
+   Renarrator. That is, 
+  ++ user should be able to highlight some portion of the fetched
+ content using the mouse.  
+  ++ Also, the user should be able to use a drop-down right-mouse-click
+ menu.  
+  ++ This menu should feature some choices fetched from *d*. In the initial round,
+   the *d* will be very simple. 
+  + modifications should be stored in local storage
+  + at the end of the session, user should be asked if he / she wishes
+   to permanently publish the modifications made in the session.
+  + if the user indicates a yes, then Sweets are to be produced and
+   submitted into the Sweetstore (which described elsewhere in this
+   doc).
+
+**** notion of *d* for r1
+Initially we expect *d* to be a very simple data structure. we expect
+it to evolve into an user driven ontology.
+
+Initially we are looking to introduce only the following tag pairs
+ + a tag for markup of date <date> and </date>
+ + a tag for markup of currency <crncy> and </crncy>
+ + a tag for markup of units <uwght> and </uwght> ... this markup is
+   specifically linked to weights as a unit
+
+**** notion of *c* for r1
+initially we will only work with text documents. That is this is a
+URL pointing to a web page which largely has text. Actually, it may
+have multiple media content, but we are only focusing on text
+processing in this r1 release.
+ 
+**** notion of *v* for r1
+The data structure for *v* will, over time, evolve into a complex
+entity like an ontology. Initially, however, we will start off with a
+simple structure like a list of the following
+ + a Indian_hindu viewer
+ + a Indian_muslim viewer
+ + a US viewer
+ + a UK viewer
+
+The reason why we are recognizing the nationality is to ensure that
+we need to ensure that we are showing dates & units in the proper
+manner when showing them to either US or UK viewer. Metric vs British
+system needs to be enforced when veweing weights. Likewise, the way a
+date is to be displayed also changes between users.
+
+The reason why we are recognizing religion is to ensure that dates can
+be based on either a Gregarian, Hindu or an Islamic calendar.
+
+The manipulation of tags / markup is based on user. The instruction for
+changing the content within the markup is given by the rules of *r*
+
+**** notion of *r* for r1
+Initially *r* is about rules for modification. Overtime this will
+evovlve into a more complex entity like an Ontology.
+
+For initial r1 release, we aim to restrict the rules to the following:
+ + if US, show date in MM-DD, YY format
+ + if UK or Indian, show date in DD-MM-YY format
+ + if Hindu, change date into Hindu calendar and show in Hindu format
+ + if Muslim, change date into Islamic calendar and show in Islamic
+   format
+ + if units, change them based on nationality. Either make them
+   British for UK, Indian or keep them in US format for US viewers of *v*
+
+*** generic r1
+The aim of this release is to enable treating the web source as a DOM TREE
+data structure. The UI should enable the user to navigate through the
+uploaded source at a node level. 
+
+Moreover, in this release, we will look to make CRUD modifications to
+the DOM tree.
+
+In r1 we will be allowed to make CRUD modifications to the code tree
+shown in the code studio. 
+
+Through the Code Studio UI, the user is allowed to identify a node. On
+the node, the following operations CRUD (Create, Replace, Update,
+Delete) operations should be possible.
+
+For this our allowed operations at the node
+level need to be:
+**** delete node
+User selects a block of content and is allowed to delete it. 
+
+**** create node
+User selects a block of content and is allowed to add some new content, whose
+source he may just type into some text box. In a later release we may
+modify this to be text box which accepts a URL of some other  source
+
+**** update /replace / modify node
+User selects a node and is allowed to modify small portions of the
+block that was selected. This is very similar to create operation.
+
+
+
+** Releases for SSS Browser
+SSS Browser development will be done in releases titled r0, r1,
+r2... Each release will build ontop of an earlier release.
+
+The SSS Browser and the SSS Renarrator have very similar code
+requirements. Code reuse (or even integrating the two apps) is recommended.
+
+*** r0
+Note that this base release is very similar to the r0 release of the
+SSS Renarrator. Code reuse is recommended. 
+ + build a web app protal
+ + enable the user to register. (Initially the registration process
+   can be minimal e.g. username, email ID etc.... however, over time
+   we need to ensure that it is restricted to the data given in *v*,
+   which is available through the SSS Configurator and SSS Storage)
+ + enable the user to input a URL
+ + fetch the content of the URL
+
+*** r1
+ + ensure that fetched content is shown with the Annotations /
+   Markups given in the SSS Storage
+ + ensure that there is connectivity with to the SSS Configurator
+   tool. Here the data-structures for *v*, *d*, *r*, should be
+   fetched and accessible.
+
+*** r2
+ + apply the rules of *r* for appropriate *v* and show with changes
+   in *c* using *d*
+
+** SSS Storage
+This component will essentially facilitate persistent storage with
+the Sweet Store that is in the backend. Definition of Sweets, the
+fixing of vaules for context are all the pending activities. Some
+development but lot more design is required in this work
+
+** SSS Configurator
+Initially the configurator will have a simple data structure for each
+of the *d*, *v*, *r* components. However, over time this needs to be
+evolved into an Ontology.
+
+*** r0
++ develop a web app with an editor type text enviroment where a user is able to create a data structure
++ should be able to store and retrieve this data structure using the
+  SSS Storage
++ the data structure may be simple in r1. See r1 of the SSS Renarrator
+
+*** r1
++ develop the ability to deal with Ontologies. We should be able to
+  view them
++ we should be able to link the Ontology to the rest of the SSS
+  system components.
++ we should be able modify the Ontology
++ we should be able to store the Ontology
+

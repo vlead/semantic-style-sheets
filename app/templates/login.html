@@ -1,0 +1,16 @@
+
+<!-- extend from base coreLayout.html -->
+{% extends "coreLayout.html" %}
+
+{% block body %}
+<form action="" method="post" name="login">
+     {{ form.hidden_tag() }}
+     <p> Please enter your Sweet ID: <br>
+         {{ form.usr_name(size=10) }}<br>
+     </p>
+
+     <p>{{ form.remember_me }} Remember Me </p>
+
+     <p><input type="submit" value="Sign In"></p>
+</form>
+{% endblock %}

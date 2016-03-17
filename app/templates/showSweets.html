@@ -1,0 +1,18 @@
+
+{% extends "coreLayout.html" %}
+{% block body %}
+  <ul class=entries>
+  <p> Here is the Raw Sweet Array: {{ sweet_array }} </p>
+  <h2> here are your sweets: </h2>
+  {% for swt in sweet_array %}
+     <ul> ID: {{ swt.id }} </ul>
+     <ul> Who: {{ swt.who }} </ul>
+     <ul> Context ID: {{ swt.context_id }} </ul>
+     <ul> What: {{ swt.what }} </ul>
+     <ul> Where: {{ swt.where }} </ul>
+     <br>
+  {% else %}
+    <li><em>Unbelievable. No Sweets here so far!</em>
+  {% endfor %}
+  </ul>
+{% endblock %}

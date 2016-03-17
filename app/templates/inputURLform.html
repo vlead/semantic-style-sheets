@@ -1,0 +1,14 @@
+
+<!-- extend from base coreLayout.html -->
+{% extends "coreLayout.html" %}
+
+{% block body %}
+{% from "_formhelpers.html" import render_field %}
+<form method=post action="/index">
+   <dl>
+       {{ form.url }}
+       {{ form.csrf_token }}
+   </dl>
+   <p> <input type=submit value=submit>
+</form>
+{% endblock %}
